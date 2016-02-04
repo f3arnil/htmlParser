@@ -1,0 +1,29 @@
+{
+  "name": "htmlparser",
+  "version": "0.0.1",
+  "description": "parse html to object",
+  "main": "index.js",
+  "dependencies": {
+    "fs": "0.0.2",
+    "http": "0.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/f3arnil/htmlParser.git"
+  },
+  "keywords": [
+    "html",
+    "parser"
+  ],
+  "author": "Alex Vasilev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/f3arnil/htmlParser/issues"
+  },
+  "homepage": "https://github.com/f3arnil/htmlParser#readme"
+}

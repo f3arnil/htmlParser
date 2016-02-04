@@ -2,57 +2,32 @@
 
 var fs = require('fs');
 var http = require('http');
-var htmlparser = require("htmlparser");
+var url = require('url');
 
-var server = new http.Server();
+var parser = require('./htmlParser');
 
-server.listen(3000, '127.0.0.1');
 
-server.on('request', function (req, res) {
-    fs.readFile('./index.html', function (err, data) {
-        if (err) {
-            console.log(err);
-            res.end(err)
-        }
+var server = new http.Server(function (req, res) {
+    var parsedUrl = url.parse(req.url, true);
+    if (parsedUrl.path === '/') {
+        fs.readFile('./index.html', function (err, data) {
+            if (err) {
+                console.log(err);
+                res.end(err)
+            }
+            console.log('Read done! Lets parse!');
+            data = parser.htmlToObject(data);
+            res.end('<script> console.log(' + JSON.stringify(data) + ');</script>');
 
-        data = htmlToObject(data);
-        console.log(data);
-        res.end('<pre>' + JSON.stringify(data) + '</pre>');
-        console.log('Read done!');
-    })
+        })
+    } else {
+        res.statusCode = 404;
+        res.end('<h1>Page not found</h1>');
+    }
+
 
 });
 
-var getTagInnerData = function (pos, tagName, html) {
-    var tagEndName = '</'+tagName+'>';
-    var to = html.indexOf(tagEndName, pos);
-    var data = html.substring(pos,to);
-    return data.replace(/(?:\r\n|\r|\n)/g, '');
-}
+server.listen(3000, '127.0.0.1');
 
-var parseHtml = function (html) {
-    var from = 0;
-    var to = html.length;
-    var parse = true;
-    var object = {};
-    while (parse) {
-        var start = html.indexOf('<', from);
-        var tagEnd = html.indexOf('>', start);
-        var tagName = html.substring(start + 1, tagEnd);
-        if (from >= to || start < from) {
-            parse = false;
-        } else {
-            console.log(tagName);
-            object[tagName] = getTagInnerData(tagEnd, tagName, html);
-            from = tagEnd;
-//            console.log(from, to);
-        }
-
-    }
-    return object;
-}
-
-var htmlToObject = function (html) {
-    var htmlObject = parseHtml(html.toString());
-    return htmlObject;
-}
+//server.on('request', );
